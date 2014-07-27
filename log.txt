@@ -1,5 +1,0 @@
-
-export AWS_ACCESS_KEY_ID='AKIAILX3R2LQFMD3JZQA'
-export AWS_SECRET_ACCESS_KEY='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'
-
-TODO: fix /var/www/app/tmp owned by root (thanks to puma install)
