@@ -1,0 +1,4 @@
+- include: git-push-deployment.yml tags=deploy
+- include: nginx.yml               tags=nginx
+- include: puma.yml                tags=puma
+

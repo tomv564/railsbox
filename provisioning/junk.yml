@@ -1,0 +1,28 @@
+   # - name: update apt cache
+    #   apt: update_cache=yes cache_valid_time=3600
+    #   sudo: yes
+
+    # - name: upgrade the distro
+    #   apt: upgrade=yes
+    #   sudo: yes
+          - build-essential
+      - git-core
+
+      - name: generate locales
+      command: 'locale-gen UTF-8'
+      sudo: yes
+       - name: download RVM
+      get-url: 
+
+
+    - name: install RVM
+      command: '\curl -L get.rvm.io | bash -s stable'
+
+    - name: source RVM path
+      command: 'source ~/.rvm/scripts/rvm'
+
+    - name: install Ruby
+      command: 'rvm install 2.1.2'
+
+    - name: set default Ruby
+      command: 'rvm --default use 2.1.2'

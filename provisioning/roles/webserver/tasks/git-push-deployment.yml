@@ -1,0 +1,28 @@
+- name: install base packages
+  apt: pkg=git-core state=latest
+  sudo: yes
+
+- name: empty git repo path exists
+  stat: path='{{git_bare_repo_path}}'
+  register: p
+
+- debug: msg="Path exists"
+  when: p.stat.isdir is defined
+
+- name: create empty git repo directory
+  file: path='{{git_bare_repo_path}}' state=directory owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+  when: p.stat.isdir is not defined
+
+- name: initialize repo
+  command: git init --bare chdir="{{git_bare_repo_path}}" creates="{{git_bare_repo_path}}/config"
+
+- name: update post-receive hook
+  action: template src=../templates/hooks/post-receive.j2 dest={{git_bare_repo_path}}/hooks/post-receive mode=0755
+
+- name: create application dir
+  file: path='{{deploy_to_dir}}' state=directory owner=www-data group=www-data mode=0775
+  sudo: yes
+
+- name: add deployment user to www-data group
+  user: name={{ansible_ssh_user}} groups='www-data'
+  sudo: yes

@@ -1,0 +1,39 @@
+# Install 1 or more versions of ruby, just add them to the list.
+# The last version listed will be set as the default ruby.
+# Change it to `ruby_rubies:` if you want no rubies installed.
+rvm1_rubies:
+  - 'ruby-2.1.2'
+
+# Where should the rvm-installer and other temp files be downloaded to?
+rvm1_temp_download_path: '~'
+
+# Where should rvm be installed to?
+rvm1_install_path: '~/.rvm'
+
+# Which group should rvm be installed to?
+rvm1_group: '{{ ansible_ssh_user }}'
+
+# what is the git bare repo called?
+git_bare_repo_path: '~/fitdiary.git'
+
+app_name: 'fitdiary'
+
+# where is the code checked out to?
+deploy_to_dir : '/var/www/fitdiary'
+
+webserver_name : 'localhost'
+
+# what to do on checkout (move this script to the post-receive hook)
+git_hook_post_receive_commands : 
+  - 'GIT_WORK_TREE="{{deploy_to_dir}}" git checkout -f master'
+  - 'source $HOME/.bash_profile'
+  - 'ruby -v'
+  - 'cd {{deploy_to_dir}}'
+  - 'RAILS_ENV=production bundle install --deployment'
+  - 'RAILS_ENV=production bundle exec rake db:setup'
+  - 'RAILS_ENV=production bundle exec rake assets:precompile'
+  - 'sudo restart puma app={{deploy_to_dir}}'
+
+app_user : 'www-data'
+
+reverse_proxy_bind_to : '0.0.0.0:9292'

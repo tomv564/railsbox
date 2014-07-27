@@ -1,0 +1,24 @@
+---
+
+    - name: install node js
+      apt: pkg=nodejs state=latest
+      sudo: yes
+
+    - name: setup puma-manager upstart config
+      action: template src=../templates/puma/puma-manager.conf.j2 dest=/etc/init/puma-manager.conf
+      sudo: yes
+
+    - name: setup puma upstart config
+      action: template src=../templates/puma/puma.conf.j2 dest=/etc/init/puma.conf
+      sudo: yes
+
+    - name: add app to /etc/puma.conf
+      lineinfile: dest=/etc/puma.conf line="{{deploy_to_dir}}" create=yes
+      sudo: yes
+
+    - name: create puma temp dir
+      file: path='{{deploy_to_dir}}/tmp/puma' state=directory owner={{ ansible_ssh_user }}
+      
+    - name: puma manager is running
+      service: name=puma-manager state=running
+      sudo: yes
